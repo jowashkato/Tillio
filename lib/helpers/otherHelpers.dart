@@ -183,14 +183,63 @@ class Helper {
     return subTotal.toStringAsFixed(2);
   }
 
-  Future<String> barcodeScan() async {
-    // Barcode scanning not fully supported on web
-    if (kIsWeb) {
-      return '';
-    }
-    var result = await BarcodeScanner.scan();
-    return result.rawContent.trimRight();
+ Future<String> barcodeScan(BuildContext context) async {
+  if (kIsWeb) return '';
+
+  try {
+    final completer = Completer<String>();
+    final controller = MobileScannerController();
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) {
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('Scan Barcode'),
+            automaticallyImplyLeading: false,
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () {
+                  controller.dispose();
+                  Navigator.pop(dialogContext);
+                  completer.complete('');
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.flash_on),
+                onPressed: () => controller.toggleTorch(),
+              ),
+              IconButton(
+                icon: const Icon(Icons.switch_camera),
+                onPressed: () => controller.switchCamera(),
+              ),
+            ],
+          ),
+          body: MobileScanner(
+            controller: controller,
+            onDetect: (capture) {
+              final barcode = capture.barcodes.firstOrNull?.rawValue;
+
+              if (barcode != null && barcode.isNotEmpty) {
+                controller.dispose();
+                Navigator.pop(dialogContext);
+                if (!completer.isCompleted) {
+                  completer.complete(barcode);
+                }
+              }
+            },
+          ),
+        );
+      },
+    );
+
+    return await completer.future;
+  } catch (e) {
+    return '';
   }
+}
 
   //function for formatting invoice
   Future<void> printDocument(sellId, taxId, context, {invoice}) async {
