@@ -1,7 +1,8 @@
 import 'dart:io';
 import 'dart:math';
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:barcode_scan2/barcode_scan2.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:cron/cron.dart';
