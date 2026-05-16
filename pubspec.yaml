@@ -52,7 +52,7 @@ dependencies:
   material_design_icons_flutter: ^6.0.7096
   path_provider: ^2.0.12
   pdf: ^3.8.4
- permission_handler: ^12.0.0
+  permission_handler: ^12.0.0
   printing: ^5.9.3
   provider: ^6.0.5
   qr: ^3.0.1
